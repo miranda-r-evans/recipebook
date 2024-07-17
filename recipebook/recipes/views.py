@@ -4,6 +4,7 @@ from rest_framework import status
 from recipebook.recipes.models import Recipe
 from .serializers import RecipeSerializer, CommentSerializer, RatingSerializer
 
+# This could be improved by an option to provide only specified fields, since we only need id, name, and rating for this API call in our current implementation
 class RecipeListView(APIView):
     def get(self, request):
         recipes = Recipe.objects.all()
@@ -22,13 +23,6 @@ class RecipeDetailView(APIView):
                 {"res": "Object with recipe id does not exists"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-    def post(self, request):
-        serializer = RecipeSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CommentDetailView(APIView):
     def post(self, request, recipe_id):

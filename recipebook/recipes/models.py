@@ -8,6 +8,8 @@ class Recipe(models.Model):
     intro = models.TextField()
     directions = models.TextField()
 
+    # In a production-ready implementation, a script would recalculate the rating at a set interval,
+    # rather than everytime this value is queried.
     @property
     def rating_avg(self):
         return self.rating_set.aggregate(Avg('rating'))['rating__avg']
@@ -29,6 +31,8 @@ class Ingredient(models.Model):
     def __str__(self):
         return str(self.name)
 
+# Splitting ingredient into its own table will be useful for feature development, i.e. searching by ingredient.
+# Splitting quantity is not as useful, but would probably be a good database optimization.
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, related_name='ingredients', on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
